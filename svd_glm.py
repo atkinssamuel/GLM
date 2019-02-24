@@ -77,11 +77,16 @@ def performancePlot(x_train_valid, y_train_valid, train_valid_predictions, xTest
     ax.plot(xTest, yTest, 'co', markersize = 1, label='Test Data')
     ax.plot(xTest, predictions, 'mo', markersize = 0.5, label='Test Prediction')
     ax.legend()
+    plt.xlabel('x Values')
+    plt.ylabel('y Values')
+    plt.title('Training and Testing Actuals and Predictions')
+    fig.savefig('TrainingTestingPredictions.png')
     plt.show()
     return
 
-def svdPredict():
+def svd_glm():
     L = minLambda()
+    print("Min Lambda =", L)
     x_train_valid = np.expand_dims(np.append(x_train[0], x_valid[0]), axis=1)
     y_train_valid = np.expand_dims(np.append(y_train[0], y_valid[0]), axis=1)
     phi = getPhi(x_train_valid)
@@ -91,10 +96,8 @@ def svdPredict():
     test_predictions = np.matmul(phi, weights)
     error = RMSE(test_predictions, y_test[0])
     performancePlot(x_train_valid, y_train_valid, train_valid_predictions, x_test[0], y_test[0], test_predictions)
+    print("Error =", error)
     return error
-
-def svd_glm():
-    return svdPredict()
 
 if __name__ == "__main__":
     svd_glm()
