@@ -80,7 +80,7 @@ def performancePlot(x_train_valid, y_train_valid, train_valid_predictions, xTest
     plt.xlabel('x Values')
     plt.ylabel('y Values')
     plt.title('Training and Testing Actuals and Predictions')
-    fig.savefig('TrainingTestingPredictions.png')
+    fig.savefig('results/TrainingTestingPredictions.png')
     plt.show()
     return
 

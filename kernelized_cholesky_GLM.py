@@ -57,7 +57,7 @@ def kernelized_cholesky_GLM():
     plt.title("Kernel vs Translational Invariant")
     plt.legend()
     plt.show()
-    fig.savefig('KernelvsTranslationalInvariant.png')
+    fig.savefig('results/KernelvsTranslationalInvariant.png')
     return
 
 if __name__ == "__main__":
