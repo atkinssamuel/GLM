@@ -2,6 +2,8 @@ from data_utils import load_dataset
 import matplotlib.pyplot as plt
 import numpy as np
 import math
+import time
+import psutil
 
 x_train, x_valid, x_test, y_train, y_valid, y_test = ([[],[],[],[],[]], [[],[],[],[],[]],
                                                      [[],[],[],[],[]], [[],[],[],[],[]],
@@ -38,7 +40,7 @@ def getPhi(x):
     phi = np.ones((len(x), 1))
     for p in range(6):
         phi = np.append(phi, polyFt(x, p), axis = 1)
-    phi = np.append(phi, sinFt(x, 110), axis = 1)
+    phi = np.append(phi, sinFt(x, 110.125), axis = 1)
     return phi
 
 def minLambda():
@@ -54,7 +56,6 @@ def minLambda():
         predictions = np.matmul(phi, weights)
 
         error = RMSE(predictions, y_valid[0])
-        print(error)
         if error < minErr:
             minErr = error
             minL = possibleL
@@ -89,11 +90,16 @@ def svd_glm():
     print("Min Lambda =", L)
     x_train_valid = np.expand_dims(np.append(x_train[0], x_valid[0]), axis=1)
     y_train_valid = np.expand_dims(np.append(y_train[0], y_valid[0]), axis=1)
+    startTime = time.time()
+    startMemory = psutil.virtual_memory()[3]
     phi = getPhi(x_train_valid)
     weights = computeWeights(phi, L, y_train_valid)
     train_valid_predictions = np.matmul(phi, weights)
     phi = getPhi(x_test[0])
     test_predictions = np.matmul(phi, weights)
+    endTime = time.time() - startTime
+    print("Primal approach: Memory requirements =", psutil.virtual_memory()[3] - startMemory)
+    print("Primal approach: time taken to compute predictions =", endTime)
     error = RMSE(test_predictions, y_test[0])
     performancePlot(x_train_valid, y_train_valid, train_valid_predictions, x_test[0], y_test[0], test_predictions)
     print("Error =", error)

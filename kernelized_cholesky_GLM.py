@@ -4,6 +4,8 @@ import matplotlib.pyplot as plt
 import numpy as np
 import scipy as sp
 import math
+import time
+import psutil
 
 
 x_train, x_valid, x_test, y_train, y_valid, y_test = ([[],[],[],[],[]], [[],[],[],[],[]],
@@ -18,11 +20,13 @@ inf = 10000000
 
 
 
-def kernelized_cholesky_GLM():
+def kernelized_cholesky_glm():
     x_train_valid = np.expand_dims(np.append(x_train[0], x_valid[0]), axis=1)
     y_train_valid = np.expand_dims(np.append(y_train[0], y_valid[0]), axis=1)
+    startTime = time.time()
+    startMemory = psutil.virtual_memory()[3]
     #Training:
-    L = 10 # Min lambda found in svd_glm()
+    L = 10
     phi = getPhi(x_train_valid)
     k = np.matmul(phi, np.transpose(phi))
     cholesky = sp.linalg.cho_factor(k + L*np.identity(len(k)))
@@ -33,7 +37,9 @@ def kernelized_cholesky_GLM():
     testPhi = getPhi(x_test[0])
     k = np.matmul(phi, np.transpose(testPhi))
     y_test_predictions = np.matmul(np.transpose(k), a)
-
+    endTime = time.time() - startTime
+    print("Kernelized method: Memory requirements =", psutil.virtual_memory()[3] - startMemory)
+    print("Kernelized method: time taken to compute predictions =", endTime)
     # Error:
     error = RMSE(y_test_predictions, y_test[0])
     print("Error =", error)
@@ -61,5 +67,5 @@ def kernelized_cholesky_GLM():
     return
 
 if __name__ == "__main__":
-    kernelized_cholesky_GLM()
+    kernelized_cholesky_glm()
 
